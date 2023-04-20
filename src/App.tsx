@@ -1,21 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
 import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi";
-import { publicProvider } from "wagmi/providers/public";
-import { ConnectWallet } from './components/ConnectWallet/ConnectWallet';
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { LedgerConnector } from "wagmi/connectors/ledger";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { MyConnectorProvider } from './components/MyConnectorProvider';
-import { metamaskConnector } from './connectors/metamask';
-import { walletConnectConnector } from './connectors/walletConnect';
+import { MyConnectorProvider } from "./components/MyConnectorProvider";
+import { metamaskConnector } from "./connectors/metamask";
+import { walletConnectConnector } from "./connectors/walletConnect";
 import { infuraProvider } from "wagmi/providers/infura";
-import GlobalStyle from './theme/globalStyles';
-import { coinbaseConnector } from './connectors/coinbase';
-import { injectedConnector } from './connectors/injected';
-import { Box } from './components/ConnectWallet/ConnectWallet.styles';
-import { Account } from './components/Account/Account';
+import GlobalStyle from "./theme/globalStyles";
+import { coinbaseConnector } from "./connectors/coinbase";
+import { injectedConnector } from "./connectors/injected";
+import { Box } from "./components/ConnectWallet/ConnectWallet.styles";
+import { StepManager } from "./components/StepManager/StepManager";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet],
@@ -43,14 +37,10 @@ function App() {
   return (
     <MyConnectorProvider context={context}>
       <WagmiConfig client={client}>
-      <GlobalStyle />
-      <Box display="flex">
-        <Box margin="0 30px 0 0">
-        <ConnectWallet />
-
+        <GlobalStyle />
+        <Box display="flex">
+          <StepManager />
         </Box>
-        <Account />
-      </Box>
       </WagmiConfig>
     </MyConnectorProvider>
   );

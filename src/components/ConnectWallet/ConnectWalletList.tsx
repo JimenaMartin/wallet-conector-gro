@@ -1,19 +1,23 @@
 import React, { useContext } from "react";
 import { Box, ConnectWalletBtn } from "./ConnectWallet.styles";
-import { Connector, useAccount, useConnect, useDisconnect } from "wagmi";
+import { Connector, useAccount, useDisconnect } from "wagmi";
 import { ConnectorContext } from "../MyConnectorProvider";
 
-export function ConnetWalletList(): React.ReactElement {
+type ConnectWalletListProps = {
+    connect: any
+}
+
+export function ConnetWalletList({connect}: ConnectWalletListProps): React.ReactElement {
   const { disconnect } = useDisconnect();
   const { address } = useAccount();
   const context = useContext(ConnectorContext);
-  const { connect } = useConnect();
 
   function onConnectWallet(
     icon: React.ReactElement,
     connector: Connector<any, any, any>
   ) {
     context?.setIcon(icon);
+    if(address) disconnect()
     connect({ connector });
   }
 

@@ -1,71 +1,51 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext, useMemo } from "react";
 
-import {
-  Connector,
-  useAccount,
-  useConnect,
-  useDisconnect,
-  useEnsName,
-} from "wagmi";
+import { useAccount, useDisconnect, useEnsName } from "wagmi";
 
 import { ConnectorContext } from "../MyConnectorProvider";
 import {
-  Wrapper,
-  Title,
   Box,
-  ConnectWalletBtn,
   BigTitle,
   Text,
 } from "../ConnectWallet/ConnectWallet.styles";
-import { ReactComponent as BackIcon } from "../../assets/back.svg";
-import { ReactComponent as CrossIcon } from "../../assets/cross.svg";
 import { ReactComponent as CopyIcon } from "../../assets/copy.svg";
 import { ReactComponent as OpenIcon } from "../../assets/open.svg";
 import { ReactComponent as DisconnectIcon } from "../../assets/disconnect.svg";
 import { ReactComponent as ChangeIcon } from "../../assets/change.svg";
 
 import { Avatar } from "./Account.styles";
-
-type ConnectWalletProps = {};
+import { Steps } from "../../constants";
 
 export function Account(): React.ReactElement {
-  const { connect, reset, status } = useConnect();
   const { disconnect } = useDisconnect();
   const { address } = useAccount();
   const context = useContext(ConnectorContext);
-  const { data } = useEnsName({ address });
+  const { data } = useEnsName({ address })
 
-  console.log(data, address);
+  const formattedAddress = useMemo(() => {
+    return data || `${address?.slice(0, 4)}...${address?.slice(address.length -4, address.length)}`
+  }, [address, data])
 
-  useEffect(() => {}, []);
-
-  function onConnectWallet(
-    icon: React.ReactElement,
-    connector: Connector<any, any, any>
-  ) {
-    context?.setIcon(icon);
-    connect({ connector });
+  function onDisconnect() {
+    disconnect();
+    context?.setCurrentStep(Steps.connect)
   }
 
-  function onRetry() {
-    reset();
+  function onSwitch() { 
+    context?.setCurrentStep(Steps.connect);
   }
 
   function onCopy() {
-    navigator.clipboard.writeText(address || '');
+    navigator.clipboard.writeText(address || "");
   }
 
   return (
-    <Wrapper>
-      <Box display="flex" justify="space-between">
-        <BackIcon />
-        <CrossIcon />
-      </Box>
+    <>
       <Box display="flex" justify="center" margin="">
         <Avatar />
       </Box>
       <Box display="flex" margin="20px 0 0 " justify="center" align="center">
-        <BigTitle>0x00...0000</BigTitle>
+        <BigTitle>{formattedAddress || ''}</BigTitle>
         <Box
           onClick={onCopy}
           cursor="pointer"
@@ -86,15 +66,26 @@ export function Account(): React.ReactElement {
         </Box>
       </Box>
       <Box margin="16px 0 0" display="flex" justify="center">
-        <Box cursor="pointer" display="flex" align="center">
+        <Box
+          onClick={onDisconnect}
+          cursor="pointer"
+          display="flex"
+          align="center"
+        >
           <DisconnectIcon />
           <Text margin="0 0 0 4px">Disconnect</Text>
         </Box>
-        <Box cursor="pointer" margin="0 0 0 14px" display="flex" align="center">
+        <Box
+          onClick={onSwitch}
+          cursor="pointer"
+          margin="0 0 0 14px"
+          display="flex"
+          align="center"
+        >
           <ChangeIcon />
           <Text margin="0 0 0 4px">Switch wallet</Text>
         </Box>
       </Box>
-    </Wrapper>
+    </>
   );
 }

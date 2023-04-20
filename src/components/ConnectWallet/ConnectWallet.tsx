@@ -2,29 +2,25 @@ import React from "react";
 
 import { useConnect } from "wagmi";
 
-import { Wrapper, Title, Box } from "./ConnectWallet.styles";
-import { ReactComponent as BackIcon } from "../../assets/back.svg";
-import { ReactComponent as CrossIcon } from "../../assets/cross.svg";
+import { Title } from "./ConnectWallet.styles";
 import { ConnectWalletStatus } from "./ConnectWalletStatus";
 import { ConnetWalletList } from "./ConnectWalletList";
 
 
 export function ConnectWallet(): React.ReactElement {
-  const { reset, status } = useConnect();
+  const { reset, status, connect } = useConnect();
 
   function onRetry() {
     reset()
   }
 
   return (
-    <Wrapper>
-      <Box display="flex" justify="space-between">
-        <BackIcon />
-        <CrossIcon />
-      </Box>
+    <>
       <Title>Connect wallet</Title>
-      {status !== 'idle' && <ConnectWalletStatus onRetry={onRetry} status={status} />}
-      {status === "idle" && <ConnetWalletList />}
-    </Wrapper>
+      {status !== "idle" && (
+        <ConnectWalletStatus onRetry={onRetry} status={status} />
+      )}
+      {status === "idle" && <ConnetWalletList connect={connect} />}
+    </>
   );
 }
