@@ -1,5 +1,5 @@
 {
-  "name": "viem",
+  "name": "wallet-connector-gro",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
